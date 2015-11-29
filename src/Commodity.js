@@ -79,6 +79,38 @@ class Commodity {
   }
 
   /**
+   * Purchases the given quantity at the given price
+   * @param {number} quantity the quantity to purchase
+   * @returns {number} the quantity purchased
+   */
+  buy(quantity) {
+    if (quantity < 0) {
+      return 0;
+    }
+
+    let factor = Math.max(1.1, 1 + quantity / 1000);
+    this.forecastPrice *= factor;
+
+    return quantity;
+  }
+
+  /**
+   * Sells the given quantity at the given price
+   * @param {number} quantity the quantity to sell
+   * @returns {number} the quantity sold
+   */
+  sell(quantity) {
+    if (quantity < 0) {
+      return 0;
+    }
+
+    let factor = Math.min(0.9, 1 - quantity / 1000);
+    this.forecastPrice *= factor;
+
+    return quantity;
+  }
+
+  /**
    * Determines a new forecast price and period.
    * The price depends on volatility
    * @returns {null} nothing

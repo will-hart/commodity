@@ -37,4 +37,37 @@ describe("Commodity", () => {
     c.addExternalForce(-3.5);
     expect(c.externalForce).to.equal(-3.5);
   });
+
+  it ("should allow purchase", () => {
+    let c = new Commodity("Wood", 1.0, 2.1);
+    expect(c.buy(100)).to.equal(100);
+  });
+
+  it ("should reject negative buy quantities", () => {
+    let c = new Commodity("Wood", 100, 0.2);
+    expect(c.buy(-100)).to.equal(0);
+  })
+
+  it ("should reject negative sell quantities", () => {
+    let c = new Commodity("Wood", 100, 0.2);
+    expect(c.sell(-100)).to.equal(0);
+  })
+
+  it ("should increase forecast price following purchase", () => {
+    let c = new Commodity("Wood", 100, 0.2);
+    c.update();
+    const forecastPrice = c.forecastPrice;
+
+    c.buy(100);
+    expect(c.forecastPrice).to.be.greaterThan(forecastPrice);
+  });
+
+  it ("should decrease forecast price following purchase", () => {
+    let c = new Commodity("Wood", 100, 0.2);
+    c.update();
+    const forecastPrice = c.forecastPrice;
+
+    c.sell(100);
+    expect(c.forecastPrice).to.be.lessThan(forecastPrice);
+  });
 });
