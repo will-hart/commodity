@@ -2,6 +2,21 @@
 
 A simple commodity trading simulation.
 
+## Installation
+
+    git clone https://github.com/will-hart/commodity
+    cd commodity
+    npm install
+    npm run build
+
+The compiled source will be in the `dist` directory
+
+## Test
+
+    npm run test
+
+## Usage
+
     import { Market } from "main";
 
     let m = new Market();
@@ -19,7 +34,7 @@ A simple commodity trading simulation.
     commodities[0].buy(100);
     commodities[0].sell(100);
 
-## license
+## License
 
 Apache 2.0
 
