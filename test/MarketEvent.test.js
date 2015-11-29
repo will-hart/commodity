@@ -1,7 +1,7 @@
-import chai from "chai"
+import chai from "chai";
 const expect = chai.expect;
 
-import MarketEvent from "../src/MarketEvent"
+import { MarketEvent } from "../src/MarketEvent"
 import Commodity from "../src/Commodity"
 
 describe("MarketEvent", () => {

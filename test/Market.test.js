@@ -1,7 +1,8 @@
-import chai from "chai"
+import chai from "chai";
 const expect = chai.expect;
 
-import Market from "../src/Market"
+import Market from "../src/Market";
+import { MarketEvent } from "../src/MarketEvent";
 
 describe("Market", () => {
   it("should set default commodities if none given to constructor", () => {
@@ -14,6 +15,18 @@ describe("Market", () => {
       { name: "wood", price: 1, volatility: 0.1 }
     ]);
     expect(m.getCommodities().length).to.equal(1);
+  });
+
+  it("should set default market events if none given to constructor", () => {
+    var m = new Market();
+    expect(m.getEvents().length).to.be.at.least(1);
+  });
+
+  it("should set the passed market events if given to constructor", () => {
+    var m = new Market(null, [
+      new MarketEvent("Wood", 0.05, 30, "Wood shortage", true)
+    ]);
+    expect(m.getEvents().length).to.equal(1);
   });
 
   it ("should have a default event likelihood of 0", () => {
