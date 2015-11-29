@@ -27,13 +27,14 @@ describe("Commodity", () => {
 
   it ("should reset external force to 1 on no arg passed", () => {
     let c = new Commodity("Wood", 1.0, 2.1);
-    c.setExternalForce();
+    c.addExternalForce();
     expect(c.externalForce).to.equal(1);
   });
 
   it ("should store external force", () => {
     let c = new Commodity("Wood", 1.0, 2.1);
-    c.setExternalForce(-3);
-    expect(c.externalForce).to.equal(-3);
+    c.addExternalForce(-1);
+    c.addExternalForce(-3.5);
+    expect(c.externalForce).to.equal(-3.5);
   });
 });

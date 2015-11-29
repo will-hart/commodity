@@ -1,7 +1,5 @@
 import Commodity from "./Commodity";
 
-let commodities = [];
-
 const defaultMarket = [
   { name: "Wood", price: "40", volatility: "0.1" },
   { name: "Oil", price: "93", volatility: "0.4" }
@@ -14,6 +12,7 @@ class Market {
         startingCommodities = defaultMarket;
       }
 
+    this._commodities = [];
     this._buildMarket(startingCommodities);
 
     this.eventLikelihood = 0; // no events unless requested
@@ -24,7 +23,7 @@ class Market {
    * @returns {array} and array of Commodity objects
    */
   update() {
-    commodities.forEach((c) => {
+    this._commodities.forEach((c) => {
       c.update();
     });
   }
@@ -34,7 +33,7 @@ class Market {
    * @returns {array} and array of Commodity objects
    */
   getCommodities() {
-    return commodities;
+    return this._commodities;
   }
 
   /**
@@ -52,7 +51,7 @@ class Market {
    * @returns {null} nothing
    */
   _buildMarket(comms) {
-    commodities = comms.map((c) => {
+    this._commodities = comms.map((c) => {
       return new Commodity(c.name, c.price, c.volatility);
     });
   }

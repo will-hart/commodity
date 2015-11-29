@@ -1,13 +1,10 @@
-const maxStartingPriceMultiplier = 10;
-let startingPrice;
-
 class Commodity {
   constructor(name, price, volatility) {
 
     // set up initial state
     this.name = name;
     this.price = price;
-    startingPrice = price;
+    this._startingPrice = price;
     this.volatility = volatility;
     this.externalForce = 1.0;
 
@@ -15,6 +12,9 @@ class Commodity {
     this.forecastFrequency = 20;
     this.sinceLastForecast = this.forecastFrequency;
     this.forecastPrice = this.price;
+
+    this._marketEvents = [];
+    this._maxStartingPriceMultiplier = 10;
   }
 
   /**
@@ -40,19 +40,41 @@ class Commodity {
 
     this.sinceLastForecast++;
     this.price = expected;
+
+    // filter out market events that have expired
+    this._marketEvents.forEach((me) => {
+      me.update();
+
+      if (me.remaining <= 0) {
+        this.addExternalForce(-me.price);
+      }
+    });
+
+    this._marketEvents = this._marketEvents.filter((me) => {
+      return me.remaining > 0;
+    });
+  }
+
+  apply(marketEvent) {
+    if (marketEvent.commodity !== this.name) {
+      return;
+    }
+
+    this._marketEvents.push(marketEvent);
+    this.addExternalForce(marketEvent.price);
   }
 
   /**
-   * Sets an external market force, to represent things like
+   * Adds an external market force, to represent things like
    * shortages or random external conditions which modify price
-   * @param {number} force the multiplier to apply to price movements
+   * @param {number} force the multiplier to add to price movements
    * @returns {null} nothing
    */
-  setExternalForce(force) {
+  addExternalForce(force) {
     if (typeof force === "undefined" || force === null) {
       this.externalForce = 1.0;
     } else {
-      this.externalForce = force;
+      this.externalForce += force;
     }
   }
 
@@ -70,7 +92,7 @@ class Commodity {
 
     // clamp to 0.1 to a multiple of the starting price
     forecast = Math.max(0.0,
-      Math.min(forecast, startingPrice * maxStartingPriceMultiplier));
+      Math.min(forecast, this._startingPrice * this._maxStartingPriceMultiplier));
 
     // commit the forecast
     this.forecastPrice = forecast;
