@@ -1,6 +1,6 @@
 {
   "name": "commodity",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A commodity simulation library for games or fun",
   "main": "src/main.js",
   "scripts": {

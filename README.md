@@ -19,10 +19,17 @@ A simple commodity trading simulation.
     commodities[0].buy(100);
     commodities[0].sell(100);
 
+## license
+
+Apache 2.0
 
 ## Version history
 
-**0.1**
+**0.1.1**
+
+- Add Apache 2.0 license
+
+**0.1.0**
 
 - Commodities and a Market
 - Prices change over time
