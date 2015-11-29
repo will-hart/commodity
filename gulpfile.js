@@ -29,6 +29,10 @@ gulp.task("test", function() {
     .pipe(mocha());
 });
 
+gulp.task("devbuild", function() {
+  gulp.start("test", "default");
+});
+
 gulp.task("watch", function() {
-    gulp.watch(["src/**/*.js", "test/*.js"], ["test", "default"]);
+    gulp.watch(["src/**/*.js", "test/*.js"], ["devbuild"]);
 });

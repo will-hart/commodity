@@ -2,9 +2,10 @@ const maxStartingPriceMultiplier = 10;
 let startingPrice;
 
 class Commodity {
-  constructor(price, volatility) {
+  constructor(name, price, volatility) {
 
     // set up initial state
+    this.name = name;
     this.price = price;
     startingPrice = price;
     this.volatility = volatility;
@@ -19,6 +20,7 @@ class Commodity {
   /**
    * Update the price based on the target price determined
    * by forecast as well as some noise proportional to volatility
+   * @returns {null} nothing
    */
   update() {
     if (this.sinceLastForecast >= this.forecastFrequency) {
@@ -43,9 +45,11 @@ class Commodity {
   /**
    * Sets an external market force, to represent things like
    * shortages or random external conditions which modify price
+   * @param {number} force the multiplier to apply to price movements
+   * @returns {null} nothing
    */
   setExternalForce(force) {
-    if (typeof(force) === "undefined" || force === null) {
+    if (typeof force === "undefined" || force === null) {
       this.externalForce = 1.0;
     } else {
       this.externalForce = force;
@@ -55,10 +59,10 @@ class Commodity {
   /**
    * Determines a new forecast price and period.
    * The price depends on volatility
+   * @returns {null} nothing
    */
   _forecast() {
     // calculate equation for end of period value
-    let current = this.price;
     let deltaRange = this.volatility * this.price;
     let delta = this.externalForce *
       (Math.random() * 2 * deltaRange - deltaRange);
