@@ -2,8 +2,8 @@ import Commodity from "./Commodity";
 import { getDefaultEvents } from "./MarketEvent";
 
 const defaultMarket = [
-  { name: "Wood", price: "40", volatility: "0.1" },
-  { name: "Oil", price: "93", volatility: "0.4" }
+  { name: "Wood", price: 40, volatility: 0.1 },
+  { name: "Oil", price: 93, volatility: 0.4 }
 ];
 
 
@@ -41,11 +41,12 @@ class Market {
       let evt = this._events[evtId];
       evt.reset();
 
-      this._commodities.forEach((c) => {
-          c.apply(evt);
-      });
-
-      this._activeEvents.push(evt);
+      if (this._activeEvents.indexOf(evt) === -1) {
+        this._activeEvents.push(evt);
+        this._commodities.forEach((c) => {
+            c.apply(evt);
+        });
+      }
     }
 
     this._activeEvents = this._activeEvents.filter((e) => {
@@ -80,6 +81,26 @@ class Market {
    */
   setEventLikelihood(likelihood) {
     this.eventLikelihood = likelihood;
+  }
+
+  /**
+   * Displays a "table" of the current market for debugging
+   * @returns {string} a table representation of the current market
+   */
+  display() {
+    let result = "======MARKET======\n";
+
+    this._activeEvents.forEach((e) => {
+      result += "EVENT: " + e.description + "\n";
+    });
+
+    this._commodities.forEach((c) => {
+      result += "COMMODITY: " + c.name + " @ " + c.price + "\n";
+    });
+
+    result += "------------------\n\n";
+
+    return result;
   }
 
   /**

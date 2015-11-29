@@ -81,4 +81,30 @@ describe("Market", () => {
     expect(numEvents).to.be.at.least(1);
     expect(numEvents).to.be.below(numTests * m._events.length);
   });
+
+  it ("should prevent duplicates in active events", () => {
+    let me = new MarketEvent("Wood", 0.05, 30, "Wood shortage", true);
+    let m = new Market(null, [me]);
+    let numEvents = 0;
+    const numTests = 100;
+
+    m.setEventLikelihood(1.5);
+
+    for (let i = 0; i < numTests; ++i) {
+      m.update();
+      numEvents += m.getActiveEvents().length;
+    }
+
+    expect(numEvents).to.equal(numTests);
+  });
+  // 
+  // it ("should display output", () => {
+  //   let m = new Market();
+  //   m.setEventLikelihood(0.1);
+  //
+  //   for (let i = 0; i < 100; ++i) {
+  //     m.update();
+  //     console.log(m.display());
+  //   }
+  // });
 });
