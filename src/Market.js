@@ -19,6 +19,7 @@ class Market {
         events = getDefaultEvents();
       }
     this._events = events;
+    this._activeEvents = [];
 
     this._commodities = [];
     this._buildMarket(startingCommodities);
@@ -36,8 +37,20 @@ class Market {
     });
 
     if (Math.random() < this.eventLikelihood) {
-      console.log("Market event");
+      let evtId = Math.floor(Math.random() * this._events.length);
+      let evt = this._events[evtId];
+      evt.reset();
+
+      this._commodities.forEach((c) => {
+          c.apply(evt);
+      });
+
+      this._activeEvents.push(evt);
     }
+
+    this._activeEvents = this._activeEvents.filter((e) => {
+      return e.remaining > 0;
+    });
   }
 
   /**
@@ -54,6 +67,10 @@ class Market {
    */
   getEvents() {
     return this._events;
+  }
+
+  getActiveEvents() {
+    return this._activeEvents;
   }
 
   /**

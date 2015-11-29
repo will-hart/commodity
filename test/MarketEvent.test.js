@@ -55,4 +55,15 @@ describe("Commodity <> MarketEvent", () => {
 
     expect(c.externalForce).to.equal(-1);
   });
+
+  it ("should reset remaining", () => {
+    var me = new MarketEvent("Wood", -2.0, 5);
+
+    me.update();
+    me.update();
+
+    me.reset();
+    
+    expect(me.remaining).to.equal(5);
+  });
 });

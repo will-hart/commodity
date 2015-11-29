@@ -13,6 +13,10 @@ class MarketEvent {
   update() {
     this.remaining--;
   }
+
+  reset() {
+    this.remaining = this.duration;
+  }
 }
 
 const getDefaultEvents = () => {
