@@ -15,6 +15,8 @@ class Commodity {
 
     this._marketEvents = [];
     this._maxStartingPriceMultiplier = 10;
+
+    this._forecast();
   }
 
   /**
@@ -88,8 +90,11 @@ class Commodity {
       return 0;
     }
 
-    let factor = Math.max(1.1, 1 + quantity / 1000);
-    this.forecastPrice *= factor;
+    let forecastFactor = Math.min(1.1, 1 + quantity / 1000);
+    this.forecastPrice *= forecastFactor;
+
+    let priceFactor = Math.min(1.1, 1 + quantity / 100000);
+    this.price *= priceFactor;
 
     return quantity;
   }
@@ -104,8 +109,11 @@ class Commodity {
       return 0;
     }
 
-    let factor = Math.min(0.9, 1 - quantity / 1000);
-    this.forecastPrice *= factor;
+    let forecastFactor = Math.max(0.9, 1 - quantity / 1000);
+    this.forecastPrice *= forecastFactor;
+
+    let priceFactor = Math.max(0.98, 1 - quantity / 100000);
+    this.price *= priceFactor;
 
     return quantity;
   }

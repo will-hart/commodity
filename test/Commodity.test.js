@@ -21,8 +21,9 @@ describe("Commodity", () => {
 
   it ("should produce new prices on update", () => {
     let c = new Commodity("Wood", 1.0, 2.1);
+    let price = c.price;
     c.update();
-    expect(c.price).to.not.equal(1.0);
+    expect(c.price).to.not.equal(price);
   });
 
   it ("should reset external force to 1 on no arg passed", () => {
@@ -53,9 +54,24 @@ describe("Commodity", () => {
     expect(c.sell(-100)).to.equal(0);
   })
 
+  it ("should increase price following purchase", () => {
+    let c = new Commodity("Wood", 100, 0.2);
+    const price = c.price;
+
+    c.buy(100);
+    expect(c.price).to.be.greaterThan(price);
+  });
+
+  it ("should decrease price following purchase", () => {
+    let c = new Commodity("Wood", 100, 0.2);
+    const price = c.price;
+
+    c.sell(100);
+    expect(c.price).to.be.lessThan(price);
+  });
+
   it ("should increase forecast price following purchase", () => {
     let c = new Commodity("Wood", 100, 0.2);
-    c.update();
     const forecastPrice = c.forecastPrice;
 
     c.buy(100);
@@ -64,7 +80,6 @@ describe("Commodity", () => {
 
   it ("should decrease forecast price following purchase", () => {
     let c = new Commodity("Wood", 100, 0.2);
-    c.update();
     const forecastPrice = c.forecastPrice;
 
     c.sell(100);
