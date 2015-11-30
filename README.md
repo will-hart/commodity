@@ -40,6 +40,10 @@ Apache 2.0
 
 ## Version history
 
+**0.2.0**
+
+- Price changes immediately on buy/sell (as well as forecast price)
+
 **0.1.1**
 
 - Add Apache 2.0 license

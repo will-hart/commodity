@@ -1,3 +1,5 @@
+const historyLength = 50;
+
 class Commodity {
   constructor(name, price, volatility) {
 
@@ -17,6 +19,9 @@ class Commodity {
     this._maxStartingPriceMultiplier = 10;
 
     this._forecast();
+
+    this._history = [];
+    this.movingAverage = 0;
   }
 
   /**
@@ -55,6 +60,20 @@ class Commodity {
     this._marketEvents = this._marketEvents.filter((me) => {
       return me.remaining > 0;
     });
+
+    // manage history
+    if (this._history.length === historyLength) {
+      this._history = this._history.slice(1);
+    }
+
+    this._history = [
+      ...this._history,
+      this.price
+    ];
+
+    this.movingAverage = this._history.reduce((prev, curr) => {
+      return prev + curr;
+    }, 0) / this._history.length;
   }
 
   apply(marketEvent) {
@@ -116,6 +135,14 @@ class Commodity {
     this.price *= priceFactor;
 
     return quantity;
+  }
+
+  /**
+   * Sells the given quantity at the given price
+   * @returns {array} the price history, least recent first
+   */
+  getHistory() {
+    return this._history;
   }
 
   /**

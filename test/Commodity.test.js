@@ -85,4 +85,22 @@ describe("Commodity", () => {
     c.sell(100);
     expect(c.forecastPrice).to.be.lessThan(forecastPrice);
   });
+
+  it ("should retain price history", () => {
+    let c = new Commodity("Wood", 100, 0.2);
+    for (let i = 0; i < 100; ++i) {
+      c.update();
+    }
+
+    expect(c.getHistory().length).to.equal(50);
+  });
+
+  it ("should calculate moving average of history", () => {
+    let c = new Commodity("Wood", 100, 0.2);
+    for (let i = 0; i < 100; ++i) {
+      c.update();
+    }
+
+    expect(c.movingAverage).to.not.equal(0);
+  });
 });
