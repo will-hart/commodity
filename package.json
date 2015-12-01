@@ -1,15 +1,16 @@
 {
   "name": "commodity",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A commodity simulation library for games or fun",
   "main": "src/main.js",
   "scripts": {
     "build": "gulp",
     "test": "gulp test",
-    "watch": "gulp watch"
+    "watch": "gulp watch",
+    "deploy": "gulp && gulp deploy"
   },
   "author": "Will Hart",
-  "license": "MIT",
+  "license": "Apache 2.0",
   "devDependencies": {
     "babel-core": "^6.2.1",
     "babel-eslint": "^5.0.0-beta4",
@@ -22,6 +23,7 @@
     "gulp-mocha": "^2.2.0",
     "gulp-plumber": "^1.0.1",
     "gulp-sourcemaps": "^1.6.0",
+    "gulp-surge": "^0.1.0",
     "gulp-watch": "^4.3.5",
     "mocha": "^2.3.4"
   }

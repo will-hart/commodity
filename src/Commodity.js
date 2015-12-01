@@ -1,3 +1,5 @@
+const historyLength = 50;
+
 class Commodity {
   constructor(name, price, volatility) {
 
@@ -15,6 +17,11 @@ class Commodity {
 
     this._marketEvents = [];
     this._maxStartingPriceMultiplier = 10;
+
+    this._forecast();
+
+    this._history = [];
+    this.movingAverage = 0;
   }
 
   /**
@@ -46,22 +53,42 @@ class Commodity {
       me.update();
 
       if (me.remaining <= 0) {
-        this.addExternalForce(-me.price);
+        this._addExternalForce(-me.price);
       }
     });
 
     this._marketEvents = this._marketEvents.filter((me) => {
       return me.remaining > 0;
     });
+
+    // manage history
+    if (this._history.length === historyLength) {
+      this._history = this._history.slice(1);
+    }
+
+    this._history = [
+      ...this._history,
+      this.price
+    ];
+
+    this.movingAverage = this._history.reduce((prev, curr) => {
+      return prev + curr;
+    }, 0) / this._history.length;
   }
 
   apply(marketEvent) {
     if (marketEvent.commodity !== this.name) {
-      return;
+      return false;
+    }
+
+    if (this._marketEvents.length > 0) {
+      return false;
     }
 
     this._marketEvents.push(marketEvent);
-    this.addExternalForce(marketEvent.price);
+    this._addExternalForce(marketEvent.price);
+    this._forecast();
+    return true;
   }
 
   /**
@@ -70,7 +97,7 @@ class Commodity {
    * @param {number} force the multiplier to add to price movements
    * @returns {null} nothing
    */
-  addExternalForce(force) {
+  _addExternalForce(force) {
     if (typeof force === "undefined" || force === null) {
       this.externalForce = 1.0;
     } else {
@@ -88,8 +115,11 @@ class Commodity {
       return 0;
     }
 
-    let factor = Math.max(1.1, 1 + quantity / 1000);
-    this.forecastPrice *= factor;
+    let forecastFactor = Math.min(1.1, 1 + quantity / 1000);
+    this.forecastPrice *= forecastFactor;
+
+    let priceFactor = Math.min(1.1, 1 + quantity / 100000);
+    this.price *= priceFactor;
 
     return quantity;
   }
@@ -104,10 +134,21 @@ class Commodity {
       return 0;
     }
 
-    let factor = Math.min(0.9, 1 - quantity / 1000);
-    this.forecastPrice *= factor;
+    let forecastFactor = Math.max(0.9, 1 - quantity / 1000);
+    this.forecastPrice *= forecastFactor;
+
+    let priceFactor = Math.max(0.98, 1 - quantity / 100000);
+    this.price *= priceFactor;
 
     return quantity;
+  }
+
+  /**
+   * Sells the given quantity at the given price
+   * @returns {array} the price history, least recent first
+   */
+  getHistory() {
+    return this._history;
   }
 
   /**
@@ -118,9 +159,19 @@ class Commodity {
   _forecast() {
     // calculate equation for end of period value
     let deltaRange = this.volatility * this.price;
-    let delta = this.externalForce *
-      (Math.random() * 2 * deltaRange - deltaRange);
-    let forecast = this.price + delta;
+    let delta = Math.random() * 2 * deltaRange - deltaRange;
+
+    // ensure the sign of delta is matched to external force where < 1 is -ve
+    if (this.externalForce > 1 && delta < 0 ||
+      this.externalForce < 1 && delta > 0) {
+        delta = -delta;
+    }
+
+    // apply external force
+    delta *= this.externalForce;
+
+    // apply the forecast
+    let forecast = this.externalForce * (this.price + delta);
 
     // clamp to 0.1 to a multiple of the starting price
     forecast = Math.max(0.0,

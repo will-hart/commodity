@@ -6,6 +6,7 @@ var eslint = require("gulp-eslint");
 var watch = require("gulp-watch");
 var mocha = require("gulp-mocha");
 var plumber = require("gulp-plumber");
+var surge = require("gulp-surge");
 require("babel-core/register");
 
 gulp.task("default", function () {
@@ -31,6 +32,12 @@ gulp.task("test", function() {
 
 gulp.task("devbuild", function() {
   gulp.start("test", "default");
+});
+
+gulp.task("deploy", function() {
+  return surge({
+    project: './dist'
+  });
 });
 
 gulp.task("watch", function() {
