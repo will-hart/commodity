@@ -95,6 +95,7 @@ class Market {
   /**
    * Adds agents to the economy
    * @param {number} numAgents the number of agents to add
+   * @returns {null} nothing
    */
   addAgents(numAgents) {
     for (let i = 0; i < numAgents; ++i) {
@@ -123,7 +124,7 @@ class Market {
 
     this._agents.forEach((a) => {
       result += "AGENT: $" + a._cash + ", " + JSON.stringify(a._holdings) + "\n";
-    })
+    });
 
     result += "=================\n\n";
 

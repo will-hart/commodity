@@ -13,17 +13,15 @@ class Agent {
       return;
     }
 
-    let self = this;
-
     shuffleArray(commodities).forEach((c) => {
-      let qty = self.getAction(c);
+      let qty = this.getAction(c);
 
       if (qty > 0) {
-        self.buy(c, qty, c.price);
+        this.buy(c, qty, c.price);
       } else if (qty < 0) {
-        self.sell(c, qty, c.price);
+        this.sell(c, qty, c.price);
       }
-    })
+    });
   }
 
   buy(commodity, quantity, price) {
@@ -65,17 +63,17 @@ class Agent {
         return 0;
       }
 
-    if (commodity.price == commodity.movingAverage) {
+    if (commodity.price === commodity.movingAverage) {
       return 0;
-    } else if (commodity.price > commodity.movingAverage) {
+    }
+
+    if (commodity.price > commodity.movingAverage) {
       if (this._holdings.hasOwnProperty(commodity.name) &&
         this._holdings[commodity.name] > 0) {
         return -this._holdings[commodity.name];
       }
-    } else if (commodity.price < commodity.movingAverage) {
-      if (this._cash > 0) {
-        return Math.floor(this._cash / commodity.price);
-      }
+    } else {
+      return Math.floor(this._cash / commodity.price);
     }
 
     return 0;

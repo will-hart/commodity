@@ -1,4 +1,4 @@
-function shuffleArray(array) {
+const shuffleArray = (array) => {
   let copy = array.slice(0);
 
   for (let i = copy.length - 1; i > 0; i--) {
@@ -9,6 +9,6 @@ function shuffleArray(array) {
   }
 
   return copy;
-}
+};
 
 export { shuffleArray };
