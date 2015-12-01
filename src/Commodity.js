@@ -78,12 +78,20 @@ class Commodity {
 
   apply(marketEvent) {
     if (marketEvent.commodity !== this.name) {
-      return;
+      return false;
+    }
+
+    if (this._marketEvents.length > 0) {
+      // check events have the same sign
+      if (marketEvent.price * this._marketEvents[0].price <= 0) {
+        return false; // different sign
+      }
     }
 
     this._marketEvents.push(marketEvent);
     this._addExternalForce(marketEvent.price);
     this._forecast();
+    return true;
   }
 
   /**

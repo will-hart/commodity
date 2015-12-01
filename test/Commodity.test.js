@@ -138,15 +138,23 @@ describe("Commodity", () => {
   it ("should expire MarketEvents when duration is zero", () => {
     var c = new Commodity("Wood", 1.0, 0.1);
     var me = new MarketEvent("Wood", -2.0, 5);
-    var me2 = new MarketEvent("Wood", -2.0, 50);
 
     c.apply(me);
-    c.apply(me2);
 
     for (var i = 0; i < 5; ++i) {
       c.update();
     }
 
+    expect(c.externalForce).to.equal(1);
+  });
+
+  it ("should not apply MarketEvents of differing signs simultaneously", () => {
+    let c = new Commodity("Wood", 1.0, 0.1);
+    let me = new MarketEvent("Wood", -2.0, 5);
+    let me2 = new MarketEvent("Wood", 2.0, 5);
+
+    expect(c.apply(me)).to.equal(true);
+    expect(c.apply(me2)).to.equal(false);
     expect(c.externalForce).to.equal(-1);
   });
 });

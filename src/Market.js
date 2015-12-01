@@ -45,16 +45,22 @@ class Market {
       });
     }
 
+    // add market events
     if (Math.random() < this.eventLikelihood) {
       let evtId = Math.floor(Math.random() * this._events.length);
       let evt = this._events[evtId];
       evt.reset();
 
       if (this._activeEvents.indexOf(evt) === -1) {
-        this._activeEvents.push(evt);
+        
+        let applied = false;
         this._commodities.forEach((c) => {
-            c.apply(evt);
+            applied |= c.apply(evt);
         });
+
+        if (applied) {
+          this._activeEvents.push(evt);
+        }
       }
     }
 
