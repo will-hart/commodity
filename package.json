@@ -1,6 +1,6 @@
 {
   "name": "commodity",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A commodity simulation library for games or fun",
   "main": "src/main.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "deploy": "gulp && gulp deploy"
   },
   "author": "Will Hart",
-  "license": "MIT",
+  "license": "Apache 2.0",
   "devDependencies": {
     "babel-core": "^6.2.1",
     "babel-eslint": "^5.0.0-beta4",
