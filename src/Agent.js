@@ -5,6 +5,8 @@ class Agent {
     this._holdings = {};
     this._trades = tradesIn;
     this._cash = startingCash;
+    this._startingCash = startingCash;
+    this._tradingHold = 0;
   }
 
   update(commodities = []) {
@@ -16,12 +18,16 @@ class Agent {
     shuffleArray(commodities).forEach((c) => {
       let qty = this.getAction(c);
 
-      if (qty > 0) {
+      if (qty > 0 && this._tradingHold <= 0) {
         this.buy(c, qty, c.price);
+
+        this._tradingHold = Math.floor(Math.random() * 7 + 3); // pause 3-10 pds
       } else if (qty < 0) {
         this.sell(c, -qty, c.price);
       }
     });
+
+    this._tradingHold--;
   }
 
   buy(commodity, quantity, price) {
@@ -45,7 +51,7 @@ class Agent {
     if (quantity < 0) {
       return;
     }
-    
+
     if (!this._holdings.hasOwnProperty(commodity.name)) {
       this._holdings[commodity.name] = 0;
       return;
@@ -81,10 +87,17 @@ class Agent {
         return -this._holdings[commodity.name];
       }
     } else {
-      return Math.floor(this._cash / commodity.price);
+      return this._getAmountTraded(commodity.price);
     }
 
     return 0;
+  }
+
+  _getAmountTraded(price) {
+    if (this._cash < 0.5 * this._startingCash) {
+      return Math.floor(this._cash / price);
+    }
+    return Math.floor(this._cash * Math.random() * 0.7 / price);
   }
 }
 

@@ -137,7 +137,7 @@ describe("Agent", () => {
     a._cash = 100;
     c.movingAverage = 5;
 
-    expect(a.getAction(c)).to.equal(100);
+    expect(a.getAction(c)).to.be.at.least(1);
   });
 
   it ("should not recommend buy if price < than moving average and has no cash", () => {
@@ -183,5 +183,48 @@ describe("Agent", () => {
     let a = new Agent();
     a.update();
     expect(true).to.equal(true);
+  });
+
+  it ("should buy a random percentage of cash when above 50% of starting cash", () => {
+      let a = new Agent();
+      let c = new Commodity("Wood", 5, 2.1);
+      c.movingAverage = 6;
+
+      a.update([c]);
+      expect(a._cash).to.be.at.least(1);
+  });
+
+  it ("should trade all cash when under 50% of starting cash", () => {
+    let a = new Agent([], 10000);
+    a._cash = 4000;
+    let c = new Commodity("Wood", 5, 2.1);
+    c.movingAverage = 6;
+
+    a.update([c]);
+    expect(a._cash).to.equal(0);
+  });
+
+  it ("should perform trades on update", () => {
+    let a = new Agent();
+    let c = new Commodity("Wood", 5, 2.1);
+    c.movingAverage = 6;
+
+    a.update([c]);
+
+    expect(a._holdings["Wood"]).to.be.at.least(1);
+  });
+
+  it ("should throttle trades by random amount", () => {
+    let a = new Agent();
+    let c = new Commodity("Wood", 5, 2.1);
+    c.movingAverage = 6;
+
+    a.update([c]);
+    let holdings = a._holdings["Wood"];
+    console.log(holdings);
+
+    a.update([c]);
+
+    expect(a._holdings["Wood"]).to.be.equal(holdings);
   });
 });
