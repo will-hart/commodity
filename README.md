@@ -27,6 +27,9 @@ The compiled source will be in the `dist` directory
     // Sets the likelihood of an event occurring in each frame
     m.setEventLikelihood(0.05);
 
+    // Create ten "AI" agents to populate the market
+    m.addAgents(10);
+
     // Get all the commodities in the market
     let commodities = m.getCommodities();
 
@@ -42,7 +45,12 @@ Apache 2.0
 
 **0.2.0**
 
+- Agents with buy/sell logic who aim to make a profit
+- Improved market event logic to prevent weird combinations
 - Price changes immediately on buy/sell (as well as forecast price)
+- [FIX] Prevent negative quantities being bought/sold
+- [FIX] Commodity prices re-forecast as soon as a market event is applied
+- [FIX] Calculation of forecast price related to external events
 
 **0.1.1**
 
