@@ -162,9 +162,19 @@ class Commodity {
   _forecast() {
     // calculate equation for end of period value
     let deltaRange = this.volatility * this.price;
-    let delta = this.externalForce *
-      (Math.random() * 2 * deltaRange - deltaRange);
-    let forecast = this.price + delta;
+    let delta = Math.random() * 2 * deltaRange - deltaRange;
+
+    // ensure the sign of delta is matched to external force where < 1 is -ve
+    if (this.externalForce > 1 && delta < 0 ||
+      this.externalForce < 1 && delta > 0) {
+        delta = -delta;
+    }
+
+    // apply external force
+    delta *= this.externalForce;
+
+    // apply the forecast
+    let forecast = this.externalForce * (this.price + delta);
 
     // clamp to 0.1 to a multiple of the starting price
     forecast = Math.max(0.0,

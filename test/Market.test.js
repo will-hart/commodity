@@ -112,7 +112,7 @@ describe("Market", () => {
   it ("should display output", () => {
     let m = new Market();
     m.addAgents(10);
-    m.setEventLikelihood(0.1);
+    m.setEventLikelihood(0.05);
 
     for (let i = 0; i < 100; ++i) {
       m.update();
