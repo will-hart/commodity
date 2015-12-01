@@ -22,13 +22,13 @@ class MarketEvent {
 const getDefaultEvents = () => {
   return [
     new MarketEvent("Wood", 0.05, 30, "Wood shortage", true),
-    new MarketEvent("Wood", 0.1, 25, "Large wood shortage", true),
+    new MarketEvent("Wood", 0.15, 25, "Large wood shortage", true),
     new MarketEvent("Wood", -0.05, 30, "Wood oversupply", true),
-    new MarketEvent("Wood", -0.1, 25, "Large  wood oversupply", true),
+    new MarketEvent("Wood", -0.15, 25, "Large  wood oversupply", true),
     new MarketEvent("Oil", 0.05, 30, "Oil shortage", true),
-    new MarketEvent("Oil", 0.1, 25, "Large oil shortage", true),
+    new MarketEvent("Oil", 0.15, 25, "Large oil shortage", true),
     new MarketEvent("Oil", -0.05, 30, "Oil oversupply", true),
-    new MarketEvent("Oil", -0.1, 25, "Large oil oversupply", true)
+    new MarketEvent("Oil", -0.15, 25, "Large oil oversupply", true)
   ];
 };
 

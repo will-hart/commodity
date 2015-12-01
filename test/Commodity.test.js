@@ -29,15 +29,25 @@ describe("Commodity", () => {
 
   it ("should reset external force to 1 on no arg passed", () => {
     let c = new Commodity("Wood", 1.0, 2.1);
-    c.addExternalForce();
+    c._addExternalForce();
     expect(c.externalForce).to.equal(1);
   });
 
   it ("should store external force", () => {
     let c = new Commodity("Wood", 1.0, 2.1);
-    c.addExternalForce(-1);
-    c.addExternalForce(-3.5);
+    c._addExternalForce(-1);
+    c._addExternalForce(-3.5);
     expect(c.externalForce).to.equal(-3.5);
+  });
+
+  it ("should reforecast after external force applied", () => {
+    let c = new Commodity("Wood", 1.0, 2.1);
+    let forecast = c.forecastPrice;
+
+    let me = new MarketEvent("Wood", 0.05, 30, "Wood shortage", true)
+    c.apply(me);
+
+    expect(c.forecastPrice).to.not.equal(forecast);
   });
 
   it ("should allow purchase", () => {

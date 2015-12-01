@@ -53,7 +53,7 @@ class Commodity {
       me.update();
 
       if (me.remaining <= 0) {
-        this.addExternalForce(-me.price);
+        this._addExternalForce(-me.price);
       }
     });
 
@@ -82,7 +82,8 @@ class Commodity {
     }
 
     this._marketEvents.push(marketEvent);
-    this.addExternalForce(marketEvent.price);
+    this._addExternalForce(marketEvent.price);
+    this._forecast();
   }
 
   /**
@@ -91,7 +92,7 @@ class Commodity {
    * @param {number} force the multiplier to add to price movements
    * @returns {null} nothing
    */
-  addExternalForce(force) {
+  _addExternalForce(force) {
     if (typeof force === "undefined" || force === null) {
       this.externalForce = 1.0;
     } else {
