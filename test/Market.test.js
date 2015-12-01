@@ -97,14 +97,26 @@ describe("Market", () => {
 
     expect(numEvents).to.equal(numTests);
   });
-  // 
-  // it ("should display output", () => {
-  //   let m = new Market();
-  //   m.setEventLikelihood(0.1);
-  //
-  //   for (let i = 0; i < 100; ++i) {
-  //     m.update();
-  //     console.log(m.display());
-  //   }
-  // });
+
+  it ("should have no agents on startup", () => {
+    let m = new Market();
+    expect(m._agents.length).to.equal(0);
+  });
+
+  it ("should add agents when requested", () => {
+    let m = new Market();
+    m.addAgents(3);
+    expect(m._agents.length).to.equal(3);
+  });
+
+  it ("should display output", () => {
+    let m = new Market();
+    m.addAgents(1);
+    m.setEventLikelihood(0.1);
+
+    for (let i = 0; i < 100; ++i) {
+      m.update();
+      console.log(m.display());
+    }
+  });
 });

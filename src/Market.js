@@ -1,3 +1,4 @@
+import Agent from "./Agent";
 import Commodity from "./Commodity";
 import { getDefaultEvents } from "./MarketEvent";
 
@@ -25,6 +26,8 @@ class Market {
     this._buildMarket(startingCommodities);
 
     this.eventLikelihood = 0; // no events unless requested
+
+    this._agents = []; // no agents unless requested
   }
 
   /**
@@ -35,6 +38,12 @@ class Market {
     this._commodities.forEach((c) => {
       c.update();
     });
+
+    if (this._agents.length > 0) {
+      this._agents.forEach((a) => {
+        a.update(this._commodities);
+      });
+    }
 
     if (Math.random() < this.eventLikelihood) {
       let evtId = Math.floor(Math.random() * this._events.length);
@@ -84,6 +93,16 @@ class Market {
   }
 
   /**
+   * Adds agents to the economy
+   * @param {number} numAgents the number of agents to add
+   */
+  addAgents(numAgents) {
+    for (let i = 0; i < numAgents; ++i) {
+      this._agents.push(new Agent());
+    }
+  }
+
+  /**
    * Displays a "table" of the current market for debugging
    * @returns {string} a table representation of the current market
    */
@@ -94,11 +113,19 @@ class Market {
       result += "EVENT: " + e.description + "\n";
     });
 
+    result += "----------------\n";
+
     this._commodities.forEach((c) => {
       result += "COMMODITY: " + c.name + " @ " + c.price + "\n";
     });
 
-    result += "------------------\n\n";
+    result += "----------------\n";
+
+    this._agents.forEach((a) => {
+      result += "AGENT: $" + a._cash + ", " + JSON.stringify(a._holdings) + "\n";
+    })
+
+    result += "=================\n\n";
 
     return result;
   }
