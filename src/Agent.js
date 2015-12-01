@@ -25,6 +25,10 @@ class Agent {
   }
 
   buy(commodity, quantity, price) {
+    if (quantity < 0) {
+      return;
+    }
+
     if (!this._holdings.hasOwnProperty(commodity.name)) {
       this._holdings[commodity.name] = 0;
     }
@@ -38,6 +42,10 @@ class Agent {
   }
 
   sell(commodity, quantity, price) {
+    if (quantity < 0) {
+      return;
+    }
+    
     if (!this._holdings.hasOwnProperty(commodity.name)) {
       this._holdings[commodity.name] = 0;
       return;
