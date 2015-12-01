@@ -82,10 +82,7 @@ class Commodity {
     }
 
     if (this._marketEvents.length > 0) {
-      // check events have the same sign
-      if (marketEvent.price * this._marketEvents[0].price <= 0) {
-        return false; // different sign
-      }
+      return false;
     }
 
     this._marketEvents.push(marketEvent);

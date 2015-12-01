@@ -148,10 +148,10 @@ describe("Commodity", () => {
     expect(c.externalForce).to.equal(1);
   });
 
-  it ("should not apply MarketEvents of differing signs simultaneously", () => {
+  it ("should not apply MarketEvents simultaneously", () => {
     let c = new Commodity("Wood", 1.0, 0.1);
     let me = new MarketEvent("Wood", -2.0, 5);
-    let me2 = new MarketEvent("Wood", 2.0, 5);
+    let me2 = new MarketEvent("Wood", -2.0, 5);
 
     expect(c.apply(me)).to.equal(true);
     expect(c.apply(me2)).to.equal(false);
