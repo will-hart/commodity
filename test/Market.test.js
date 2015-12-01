@@ -109,14 +109,14 @@ describe("Market", () => {
     expect(m._agents.length).to.equal(3);
   });
 
-  it ("should display output", () => {
-    let m = new Market();
-    m.addAgents(10);
-    m.setEventLikelihood(0.05);
-
-    for (let i = 0; i < 100; ++i) {
-      m.update();
-      console.log(m.display());
-    }
-  });
+  // it ("should display output", () => {
+  //   let m = new Market();
+  //   m.addAgents(10);
+  //   m.setEventLikelihood(0.05);
+  //
+  //   for (let i = 0; i < 100; ++i) {
+  //     m.update();
+  //     console.log(m.display());
+  //   }
+  // });
 });

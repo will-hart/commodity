@@ -221,7 +221,6 @@ describe("Agent", () => {
 
     a.update([c]);
     let holdings = a._holdings["Wood"];
-    console.log(holdings);
 
     a.update([c]);
 
