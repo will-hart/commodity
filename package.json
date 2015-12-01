@@ -6,7 +6,8 @@
   "scripts": {
     "build": "gulp",
     "test": "gulp test",
-    "watch": "gulp watch"
+    "watch": "gulp watch",
+    "deploy": "gulp && gulp deploy"
   },
   "author": "Will Hart",
   "license": "MIT",
@@ -22,6 +23,7 @@
     "gulp-mocha": "^2.2.0",
     "gulp-plumber": "^1.0.1",
     "gulp-sourcemaps": "^1.6.0",
+    "gulp-surge": "^0.1.0",
     "gulp-watch": "^4.3.5",
     "mocha": "^2.3.4"
   }
