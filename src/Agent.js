@@ -36,7 +36,10 @@ class Agent {
     }
 
     if (!this._holdings.hasOwnProperty(commodity.name)) {
-      this._holdings[commodity.name] = 0;
+      this._holdings[commodity.name] = {
+        qty: 0,
+        purchase: []
+      };
     }
 
     if (quantity * price > this._cash) {
@@ -44,7 +47,11 @@ class Agent {
     }
 
     this._cash -= quantity * price;
-    this._holdings[commodity.name] += quantity;
+    this._holdings[commodity.name].qty += quantity;
+    this._holdings[commodity.name].purchase.push({
+      qty: quantity,
+      price: price
+    });
   }
 
   sell(commodity, quantity, price) {
@@ -53,14 +60,37 @@ class Agent {
     }
 
     if (!this._holdings.hasOwnProperty(commodity.name)) {
-      this._holdings[commodity.name] = 0;
+      this._holdings[commodity.name] = {
+        qty: 0,
+        purchase: []
+      };
       return;
     }
 
-    quantity = Math.min(quantity, this._holdings[commodity.name]);
+    let holding = this._holdings[commodity.name];
+    quantity = Math.min(quantity, holding.qty);
 
+    // update positions
     this._cash += quantity * price;
-    this._holdings[commodity.name] -= quantity;
+    holding.qty -= quantity;
+
+    // remove purchase records
+    this._updatePurchaseRecords(quantity, holding);
+  }
+
+  _updatePurchaseRecords(quantity, holding) {
+    while (quantity > 0 && holding.purchase.length) {
+      let sold = Math.min(quantity, holding.purchase[0].qty);
+
+      if (sold === holding.purchase[0].qty) {
+        // sold this purchase off
+        holding.purchase = holding.purchase.slice(1);
+      } else {
+        holding.purchase[0].qty -= quantity;
+      }
+
+      quantity -= sold;
+    }
   }
 
   getTradesIn(commodity) {
@@ -83,21 +113,32 @@ class Agent {
 
     if (commodity.price > commodity.movingAverage) {
       if (this._holdings.hasOwnProperty(commodity.name) &&
-        this._holdings[commodity.name] > 0) {
-        return -this._holdings[commodity.name];
+        this._holdings[commodity.name].qty > 0) {
+        return this._getAmountSold(
+          this._holdings[commodity.name], commodity.price);
       }
     } else {
-      return this._getAmountTraded(commodity.price);
+      return this._getAmountPurchased(commodity.price);
     }
 
     return 0;
   }
 
-  _getAmountTraded(price) {
+  _getAmountPurchased(price) {
     if (this._cash < 0.5 * this._startingCash) {
       return Math.floor(this._cash / price);
     }
     return Math.floor(this._cash * Math.random() * 0.7 / price);
+  }
+
+  _getAmountSold(holding, currentPrice) {
+    let selling = holding.purchase.filter((h) => {
+      return h.price < currentPrice;
+    }).reduce((qty, h) => {
+      return qty + h.qty;
+    }, 0);
+
+    return -selling;
   }
 }
 

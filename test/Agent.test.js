@@ -32,7 +32,7 @@ describe("Agent", () => {
 
       expect(a._cash).to.equal(cash - 100);
       expect(a._holdings).to.contain.all.keys(["Wood"]);
-      expect(a._holdings["Wood"]).to.equal(100);
+      expect(a._holdings["Wood"].qty).to.equal(100);
   });
 
   it ("should update holdings on buy", () => {
@@ -45,7 +45,7 @@ describe("Agent", () => {
 
     expect(a._cash).to.equal(cash - 200);
     expect(a._holdings).to.contain.all.keys(["Wood"]);
-    expect(a._holdings["Wood"]).to.equal(200);
+    expect(a._holdings["Wood"].qty).to.equal(200);
   });
 
   it ("should update holdings on sell", () => {
@@ -53,13 +53,13 @@ describe("Agent", () => {
     let c = new Commodity("Wood", 1, 2.1);
     let cash = a._cash;
 
-    a._holdings = {"Wood": 100}
+    a._holdings = {"Wood": {qty: 100, purchase: []}};
 
     a.sell(c, 50, 1);
 
     expect(a._cash).to.equal(cash + 50);
     expect(a._holdings).to.contain.all.keys(["Wood"]);
-    expect(a._holdings["Wood"]).to.equal(50);
+    expect(a._holdings["Wood"].qty).to.equal(50);
   });
 
   it ("should update holdings on sell if key doesn't exist", () => {
@@ -71,7 +71,7 @@ describe("Agent", () => {
 
     expect(a._cash).to.equal(cash);
     expect(a._holdings).to.contain.all.keys(["Wood"]);
-    expect(a._holdings["Wood"]).to.equal(0);
+    expect(a._holdings["Wood"].qty).to.equal(0);
   });
 
   it ("should limit buy to available money", () => {
@@ -82,7 +82,7 @@ describe("Agent", () => {
 
     expect(a._cash).to.equal(0);
     expect(a._holdings).to.contain.all.keys(["Wood"]);
-    expect(a._holdings["Wood"]).to.equal(50000);
+    expect(a._holdings["Wood"].qty).to.equal(50000);
   });
 
   it ("should ignore buy with negative quantity", () => {
@@ -101,26 +101,26 @@ describe("Agent", () => {
     let c = new Commodity("Wood", 1, 2.1);
     let cash = a._cash;
 
-    a._holdings = {"Wood": 100}
+    a._holdings = {"Wood": {qty: 100, purchase: []}};
 
     a.sell(c, 150, 1);
 
     expect(a._cash).to.equal(cash + 100);
     expect(a._holdings).to.contain.all.keys(["Wood"]);
-    expect(a._holdings["Wood"]).to.equal(0);
+    expect(a._holdings["Wood"].qty).to.equal(0);
   });
 
   it ("should ignore sell with negative quantity", () => {
     let a = new Agent();
     let c = new Commodity("Wood", 1, 2.1);
     let cash = a._cash;
-    a._holdings = {"Wood": 100}
+    a._holdings = {"Wood": {qty: 100, purchase: []}};
 
     a.sell(c, -100, 1);
 
     expect(a._cash).to.equal(cash);
     expect(a._holdings).to.contain.all.keys(["Wood"]);
-    expect(a._holdings["Wood"]).to.equal(100);
+    expect(a._holdings["Wood"].qty).to.equal(100);
   });
 
   it ("should recommend hold if price == moving average", () => {
@@ -149,31 +149,46 @@ describe("Agent", () => {
     expect(a.getAction(c)).to.equal(0);
   });
 
-  it ("should recommend sell if price > moving average and has stock", () => {
-    let a = new Agent();
-    let c = new Commodity("Wood", 5, 2.1);
-    a._cash = 100;
-    a._holdings = { "Wood": 100 }
-    c.movingAverage = 1;
-
-    expect(a.getAction(c)).to.equal(-100);
-  });
-
   it ("should not recommend sell if price > moving average and has no stock", () => {
     let a = new Agent();
     let c = new Commodity("Wood", 5, 2.1);
     a._cash = 100;
-    a._holdings = { "Wood": 0 }
+    a._holdings = { "Wood": { qty: 0, purchase: [] } }
     c.movingAverage = 1;
 
     expect(a.getAction(c)).to.equal(0);
+  });
+
+  it ("should not recommend sell if price < all purchase pricess", () => {
+    let a = new Agent();
+    let c = new Commodity("Wood", 5, 2.1);
+    a._cash = 100;
+    a._holdings = { "Wood": { qty: 100, purchase: [
+      { qty: 100, price: 6 }
+    ]}};
+    c.movingAverage = 1;
+
+    expect(a.getAction(c)).to.equal(0);
+  });
+
+  it ("should recommend sell for holding price > purchase prices", () => {
+    let a = new Agent();
+    let c = new Commodity("Wood", 5, 2.1);
+    a._cash = 100;
+    a._holdings = { "Wood": { qty: 150, purchase: [
+      { qty: 100, price: 6 },
+      { qty: 50, price: 4 }
+    ]}};
+    c.movingAverage = 1;
+
+    expect(a.getAction(c)).to.equal(-50);
   });
 
   it ("should recommend hold if not in tradeable commodities", () => {
     let a = new Agent(["Wood"]);
     let c = new Commodity("Paper", 1, 2.1);
     a._cash = 100;
-    a._holdings = { "Wood": 100 }
+    a._holdings = { "Wood": { qty: 0, purchase: [] } }
     c.movingAverage = 5;
 
     expect(a.getAction(c)).to.equal(0);
@@ -182,7 +197,7 @@ describe("Agent", () => {
   it ("should handle null being passed to update", () => {
     let a = new Agent();
     a.update();
-    expect(true).to.equal(true);
+    expect(true).to.be.true;
   });
 
   it ("should buy a random percentage of cash when above 50% of starting cash", () => {
@@ -211,7 +226,7 @@ describe("Agent", () => {
 
     a.update([c]);
 
-    expect(a._holdings["Wood"]).to.be.at.least(1);
+    expect(a._holdings["Wood"].qty).to.be.at.least(1);
   });
 
   it ("should throttle trades by random amount", () => {
@@ -224,6 +239,6 @@ describe("Agent", () => {
 
     a.update([c]);
 
-    expect(a._holdings["Wood"]).to.be.equal(holdings);
+    expect(a._holdings["Wood"]).to.be.deep.equal(holdings);
   });
 });

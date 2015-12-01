@@ -1,4 +1,4 @@
-const shuffleArray = function(arr) {
+const shuffleArray = function(arr = []) {
   let copy = arr.slice(0);
 
   for (let i = copy.length - 1; i > 0; i--) {
