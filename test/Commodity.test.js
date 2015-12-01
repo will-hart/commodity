@@ -2,6 +2,7 @@ import chai from "chai"
 const expect = chai.expect;
 
 import Commodity from "../src/Commodity"
+import { MarketEvent } from "../src/MarketEvent"
 
 describe("Commodity", () => {
   it ("should set price in constructor", () => {
@@ -102,5 +103,40 @@ describe("Commodity", () => {
     }
 
     expect(c.movingAverage).to.not.equal(0);
+  });
+
+  it ("should not apply a market event with a different commodity", () => {
+    var c = new Commodity("Wood", 1.0, 0.1);
+    var me = new MarketEvent("fred", -2.0, 5);
+    var me2 = new MarketEvent("Wood", -2.0, 5);
+
+    c.apply(me);
+    c.apply(me2);
+
+    expect(c.externalForce).to.equal(-1);
+  });
+
+  it ("should apply a market event to a commodity", () => {
+    var c = new Commodity("Wood", 1.0, 0.1);
+    var me = new MarketEvent("Wood", -2.0, 5);
+
+    c.apply(me);
+
+    expect(c.externalForce).to.equal(-1);
+  });
+
+  it ("should expire MarketEvents when duration is zero", () => {
+    var c = new Commodity("Wood", 1.0, 0.1);
+    var me = new MarketEvent("Wood", -2.0, 5);
+    var me2 = new MarketEvent("Wood", -2.0, 50);
+
+    c.apply(me);
+    c.apply(me2);
+
+    for (var i = 0; i < 5; ++i) {
+      c.update();
+    }
+
+    expect(c.externalForce).to.equal(-1);
   });
 });

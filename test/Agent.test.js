@@ -85,6 +85,17 @@ describe("Agent", () => {
     expect(a._holdings["Wood"]).to.equal(50000);
   });
 
+  it ("should ignore buy with negative quantity", () => {
+    let a = new Agent();
+    let c = new Commodity("Wood", 1, 2.1);
+    let cash = a._cash;
+
+    a.buy(c, -1000000, 1);
+
+    expect(a._cash).to.equal(cash);
+    expect(a._holdings).to.not.contain.any.keys(["Wood"]);
+  });
+
   it ("should limit sell to available quantity", () => {
     let a = new Agent();
     let c = new Commodity("Wood", 1, 2.1);
@@ -97,6 +108,19 @@ describe("Agent", () => {
     expect(a._cash).to.equal(cash + 100);
     expect(a._holdings).to.contain.all.keys(["Wood"]);
     expect(a._holdings["Wood"]).to.equal(0);
+  });
+
+  it ("should ignore sell with negative quantity", () => {
+    let a = new Agent();
+    let c = new Commodity("Wood", 1, 2.1);
+    let cash = a._cash;
+    a._holdings = {"Wood": 100}
+
+    a.sell(c, -100, 1);
+
+    expect(a._cash).to.equal(cash);
+    expect(a._holdings).to.contain.all.keys(["Wood"]);
+    expect(a._holdings["Wood"]).to.equal(100);
   });
 
   it ("should recommend hold if price == moving average", () => {

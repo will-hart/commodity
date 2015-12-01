@@ -19,7 +19,7 @@ class Agent {
       if (qty > 0) {
         this.buy(c, qty, c.price);
       } else if (qty < 0) {
-        this.sell(c, qty, c.price);
+        this.sell(c, -qty, c.price);
       }
     });
   }
